@@ -1,0 +1,162 @@
+<html xmlns:th="http://www.thymeleaf.com" lang="en">
+<head>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"/>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="js/radiobutton.js"></script>
+    <script type="text/javascript" src="js/gstatic.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <meta http-equiv="refresh" content="60"/>
+    <script type="text/javascript" th:inline="javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            /*<![CDATA[*/
+            var jswallets = /*[[${wallets}]]*/;
+            console.log(jswallets.length);
+
+            var tlArray = [['Wallet', 'EUR']];
+            for(i=0;i<jswallets.length;i++){
+                tlArray.push([jswallets[i].currency,jswallets[i].value])
+            }
+            /*]]>*/
+            console.log(tlArray);
+
+            var data = google.visualization.arrayToDataTable(tlArray);
+            var options = {
+                chartArea: {top: 5},
+                legend: {position: 'bottom'}
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data,options);
+        }
+    </script>
+    <title th:text="&euro; + ''+ ${total}"></title>
+</head>
+<body>
+<div class="container py-2">
+    <div class="card">
+        <div class="card-header card-primary text-uppercase text-center">
+            <h3 style="color: white">Jims Crypto Moneyyz</h3>
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col-6 text-right">
+                    <h4>Total:</h4>
+                </div>
+                <div class="col-6">
+                    <h4 th:text="&euro; + ''+ ${total}"></h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 text-right">
+                    <h4>Change:</h4>
+                </div>
+                <div class="col col-md-auto">
+                    <i class="fa fa-lg fa-arrow-up align-middle py-1" aria-hidden="true" style="color: green;"
+                       th:if="${verschil1h &gt; 0}"></i>
+                    <i class="fa fa-lg fa-arrow-down align-middle py-1" aria-hidden="true" style="color: red;"
+                       th:if="${verschil1h &lt; 0}"></i>
+                </div>
+                <div class="col ml-0 pl-0">
+                    <h5 th:text="''+${verschil1h} +'%'"></h5>
+                </div>
+            </div>
+
+            <div class="row justify-content-md-center">
+                <label class="custom-control custom-radio">
+                    <input id="radio1" name="radio" type="radio" class="custom-control-input" value="1h"/>
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">1h</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input id="radio2" name="radio" type="radio" class="custom-control-input" value="24h"/>
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">24h</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input id="radio3" name="radio" type="radio" class="custom-control-input" value="1d"/>
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">7d</span>
+                </label>
+            </div>
+
+            <div class="row">
+                <div class="col-6 text-right">
+                    <h6>Max:</h6>
+                </div>
+                <div class="col-6">
+                    <h6 th:text="&euro; + ''+ ${max}"></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center text-uppercase font-weight-bold"><h3>Wallets</h3></div>
+        <div class="card-block py-0 px-0">
+            <table class="table table-hover table-sm">
+                <thead class="thead-inverse">
+                <tr>
+                    <th>Name</th>
+                    <th>Balance</th>
+                    <th>Total Value BTC</th>
+                    <th>Value BTC</th>
+                    <th>Value EURO</th>
+                    <th>1h Change</th>
+                    <th>Provider</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="wallet : ${wallets}">
+                    <th scope="row" th:text="${wallet.currency}" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0}"></th>
+                    <th scope="row" th:text="${wallet.currency}" th:if="${wallet.priceChange1h == 0.0}"></th>
+                    <th scope="row" th:text="${wallet.currency}" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0}"></th>
+
+                    <td th:text="${wallet.balance}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
+                    <td th:text="${wallet.balance}" th:if="${wallet.priceChange1h == 0}"></td>
+                    <td th:text="${wallet.balance}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+
+                    <td th:text="${wallet.totalValueBtc}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
+                    <td th:text="${wallet.totalValueBtc}" th:if="${wallet.priceChange1h == 0}"></td>
+                    <td th:text="${wallet.totalValueBtc}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+
+                    <td th:text="${wallet.btcValue}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
+                    <td th:text="${wallet.btcValue}" th:if="${wallet.priceChange1h == 0}"></td>
+                    <td th:text="${wallet.btcValue}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+
+                    <td th:text="${wallet.value}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
+                    <td th:text="${wallet.value}" th:if="${wallet.priceChange1h == 0}"></td>
+                    <td th:text="${wallet.value}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+
+                    <td th:text="${wallet.priceChange1h} +'%'" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0}"></td>
+                    <td th:text="${wallet.priceChange1h} +'%'" th:if="${wallet.priceChange1h == 0}"></td>
+                    <td th:text="${wallet.priceChange1h} +'%'" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0}"></td>
+
+                    <td th:text="${wallet.provider}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
+                    <td th:text="${wallet.provider}" th:if="${wallet.priceChange1h == 0}"></td>
+                    <td th:text="${wallet.provider}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="container justify-content-md-center py-5">
+                <h3 class="text-center">Verdeling</h3>
+                <div class="justify-content-md-center" id="piechart" style="width: 900px; height: 500px; display: block; margin: 0 auto;"></div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <p class="text-muted text-center">Created by <a href="#">Jim van Biezen</a> ©</p>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

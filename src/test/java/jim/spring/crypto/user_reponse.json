@@ -1,0 +1,29 @@
+{
+  "data": {
+    "id": "a9fb020f-60db-50b4-adc1-eff62837e60a",
+    "name": "Jim van Biezen",
+    "username": null,
+    "profile_location": null,
+    "profile_bio": null,
+    "profile_url": null,
+    "avatar_url": "https://images.coinbase.com/avatar?h=0rKCHPuRfdm6BDZr2nbPL1KJeRo41w8SXOoMz%2BLGUfDSxMlcxZqAn8egDqUt%0AvSYj\u0026s=128",
+    "resource": "user",
+    "resource_path": "/v2/user",
+    "time_zone": "Amsterdam",
+    "native_currency": "EUR",
+    "bitcoin_unit": "BTC",
+    "state": null,
+    "country": {
+      "code": "NL",
+      "name": "Netherlands"
+    },
+    "created_at": "2017-06-10T18:05:22Z"
+  },
+  "warnings": [
+    {
+      "id": "missing_version",
+      "message": "Please supply API version (YYYY-MM-DD) as CB-VERSION header",
+      "url": "https://developers.coinbase.com/api#versioning"
+    }
+  ]
+}
