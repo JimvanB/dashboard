@@ -15,9 +15,9 @@ public class BinanceService {
 
     private CryptoApiCaller binance;
 
-    public BinanceService(CryptoApiCaller binance) {
-        this.binance = binance;
-    }
+ //   public BinanceService(CryptoApiCaller binance) {
+   //     this.binance = binance;
+ //   }
 
     public List<Wallet> getWallets() throws IOException {
         return binance.getWallets();

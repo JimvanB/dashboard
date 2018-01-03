@@ -18,7 +18,6 @@ public class CryptoApiBuilder {
     private String api_key;
     private String api_secret;
     private URL base_api_url;
-    private String acct_id;
     private String apiService;
 
     public CryptoApiBuilder() {
@@ -57,16 +56,6 @@ public class CryptoApiBuilder {
         this.base_api_url = base_api_url;
         return this;
     }
-
-    public CryptoApiBuilder withAccountId(String acct_id) {
-        this.acct_id = acct_id;
-        return this;
-    }
-
-    public String getAcct_id() {
-        return acct_id;
-    }
-
 
     public String getApi_key() {
         return api_key;

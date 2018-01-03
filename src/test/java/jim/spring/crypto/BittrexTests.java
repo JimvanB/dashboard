@@ -1,3 +1,4 @@
+/*
 package jim.spring.crypto;
 
 import com.coinbase.api.exception.CoinbaseException;
@@ -27,3 +28,4 @@ public class BittrexTests {
 	}
 
 }
+*/
