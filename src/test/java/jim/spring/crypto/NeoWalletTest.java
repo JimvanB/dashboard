@@ -5,6 +5,7 @@ import jim.spring.crypto.builder.CryptoApiBuilder;
 import jim.spring.crypto.entity.Wallet;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
@@ -22,10 +23,12 @@ import static org.junit.Assert.assertNotNull;
 public class NeoWalletTest {
 
     NeoService neoService ;
+    @Value("NEO_ADDRESS")
+    String neoAddress;
 
     @Before
     public void setUp() throws Exception {
-        neoService = new NeoService(new CryptoApiBuilder().withBaseApiURL(new URL("https://otcgo.cn/api/v1/balances/ASh6UPpqEUnwueDspXupgtd1a17wo93iy5/")).build());
+        neoService = new NeoService(new CryptoApiBuilder().withBaseApiURL(new URL("https://otcgo.cn/api/v1/balances/"+neoAddress+"/")).build());
     }
 
     @Test
