@@ -5,6 +5,8 @@ import jim.spring.crypto.builder.CryptoApiBuilder;
 import jim.spring.crypto.entity.Wallet;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +17,8 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by jim on 24-11-17.
  */
+@SpringBootTest
+@TestPropertySource(value = "classpath:test-properties.properties")
 public class NeoWalletTest {
 
     NeoService neoService ;
