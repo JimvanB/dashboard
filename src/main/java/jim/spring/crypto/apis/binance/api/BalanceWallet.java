@@ -4,6 +4,7 @@ package jim.spring.crypto.apis.binance.api;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jim.spring.crypto.interfaces.ApiWallet;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "free",
     "locked"
 })
-public class Balance {
+public class BalanceWallet implements ApiWallet {
 
     @JsonProperty("asset")
     private String asset;

@@ -5,7 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jim.spring.crypto.apis.binance.api.Balance;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -35,7 +34,7 @@ public class BinanceResponse {
     @JsonProperty("canDeposit")
     private Boolean canDeposit;
     @JsonProperty("balances")
-    private List<Balance> balances = null;
+    private List<BalanceWallet> balanceWallets = null;
 
     @JsonProperty("makerCommission")
     public Integer getMakerCommission() {
@@ -108,13 +107,13 @@ public class BinanceResponse {
     }
 
     @JsonProperty("balances")
-    public List<Balance> getBalances() {
-        return balances;
+    public List<BalanceWallet> getBalanceWallets() {
+        return balanceWallets;
     }
 
     @JsonProperty("balances")
-    public void setBalances(List<Balance> balances) {
-        this.balances = balances;
+    public void setBalanceWallets(List<BalanceWallet> balanceWallets) {
+        this.balanceWallets = balanceWallets;
     }
 
 }

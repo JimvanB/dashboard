@@ -1,5 +1,6 @@
 package jim.spring.crypto.services;
 
+import jim.spring.crypto.apis.binance.api.BinanceService;
 import jim.spring.crypto.apis.bittrex.api.BittrexService;
 import jim.spring.crypto.apis.coinbase.api.CoinbaseService;
 import jim.spring.crypto.apis.coinmarketcap.CoinmarketCapService;
@@ -28,13 +29,15 @@ public class WalletService {
     private CoinbaseService coinbaseService;
     private NeoService neoService;
     private BittrexService bittrexService;
+    private BinanceService binanceService;
     private WalletRepository walletRepository;
 
-    public WalletService(CoinmarketCapService coinmarketCapService, CoinbaseService coinbaseService, NeoService neoService, BittrexService bittrexService, WalletRepository walletRepository) {
+    public WalletService(CoinmarketCapService coinmarketCapService, CoinbaseService coinbaseService, NeoService neoService, BittrexService bittrexService, BinanceService binanceService, WalletRepository walletRepository) {
         this.coinmarketCapService = coinmarketCapService;
         this.coinbaseService = coinbaseService;
         this.neoService = neoService;
         this.bittrexService = bittrexService;
+        this.binanceService = binanceService;
         this.walletRepository = walletRepository;
     }
 
@@ -46,6 +49,7 @@ public class WalletService {
         wallets.addAll(coinbaseService.getWallets());
         wallets.addAll(bittrexService.getWallets());
         wallets.addAll(neoService.getWallets());
+        wallets.addAll(binanceService.getWallets());
         Iterator<Wallet> walletIterator = wallets.iterator();
         while (walletIterator.hasNext()) {
             Wallet wallet = walletIterator.next();
@@ -63,6 +67,16 @@ public class WalletService {
             }
             for (Currency curren : currencies) {
                 if (wallet.getCurrency().equals(curren.getSymbol())) {
+                    wallet.setBalance(round(wallet.getBalance(),6));
+                    wallet.setBtcValue(round(Double.valueOf(curren.getPriceBtc()),6));
+                    wallet.setTotalValueBtc(round(wallet.getBalance()*Double.valueOf(curren.getPriceBtc()),6));
+                    wallet.setEuroValue(round(wallet.getBalance() * Double.valueOf(curren.getPrice_eur()), 2));
+                    wallet.setPriceChange1h(Double.valueOf(curren.getPercentChange1h()));
+                    wallet.setPriceChange24h(Double.valueOf(curren.getPercentChange24h()));
+                    wallet.setPriceChange7d(Double.valueOf(curren.getPercentChange7d()));
+                    break;
+                }
+                if(wallet.getCurrency().equals("IOTA")&&curren.getSymbol().equals("MIOTA")){
                     wallet.setBalance(round(wallet.getBalance(),6));
                     wallet.setBtcValue(round(Double.valueOf(curren.getPriceBtc()),6));
                     wallet.setTotalValueBtc(round(wallet.getBalance()*Double.valueOf(curren.getPriceBtc()),6));

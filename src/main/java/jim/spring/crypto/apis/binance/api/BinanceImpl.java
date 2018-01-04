@@ -3,11 +3,17 @@ package jim.spring.crypto.apis.binance.api;
 import jim.spring.crypto.builder.CryptoApiBuilder;
 import jim.spring.crypto.interfaces.CryptoApiCaller;
 import jim.spring.crypto.entity.Wallet;
+import org.apache.commons.codec.binary.Hex;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,24 +21,48 @@ import java.util.List;
  */
 public class BinanceImpl implements CryptoApiCaller {
 
+    private String apiKey;
+    private String apiSecret;
     private final URL baseUrl;
 
     public BinanceImpl(CryptoApiBuilder cryptoApiBuilder) {
+        this.apiKey = cryptoApiBuilder.getApi_key();
+        this.apiSecret = cryptoApiBuilder.getApi_secret();
         this.baseUrl = cryptoApiBuilder.getBase_api_url();
     }
 
-    @Override
     public List<Wallet> getWallets() throws IOException {
+        URL url = new URL(this.baseUrl, "account");
         RestTemplate restTemplate = new RestTemplate();
-        BinanceResponse balances = restTemplate.getForEntity(baseUrl.toString(), BinanceResponse.class).getBody();
-        List<Wallet> wallets = new ArrayList<>();
-        for (Balance balance : balances.getBalances()) {
-            BinanceWallet binanceWallet = new BinanceWallet();
-            binanceWallet.setBalance(Double.parseDouble(balance.getFree()) + Double.parseDouble(balance.getLocked()));
-            binanceWallet.setCurrency(balance.getAsset());
-            wallets.add(binanceWallet);
+        String params = "timestamp="+System.currentTimeMillis();
+        HttpHeaders headers = doAuth(params);
+
+        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+        String finalUrl = url.toString()+"?"+params+"&signature="+getSignature(params);
+        List<BalanceWallet> balanceWallets = restTemplate.exchange(finalUrl, HttpMethod.GET, entity, BinanceResponse.class).getBody().getBalanceWallets();
+        return new BinanceWalletConverter().convert(balanceWallets);
+    }
+
+    private HttpHeaders doAuth(String params) throws IOException {
+
+        String signature = getSignature(params);
+        System.out.println(signature);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("X-MBX-APIKEY", apiKey);
+        return headers;
+    }
+
+    private String getSignature(String params) throws IOException {
+        Mac mac;
+        try {
+            mac = Mac.getInstance("HmacSHA256");
+            mac.init(new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256"));
+        } catch (Throwable t) {
+            throw new IOException(t);
         }
 
-        return wallets;
+        return new String(Hex.encodeHex(mac.doFinal(params.getBytes())));
     }
+
 }

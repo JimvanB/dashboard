@@ -14,11 +14,11 @@ import java.net.URL;
  */
 @Configuration
 public class CryptoConfig {
-/*
-    @Value("${BIN_API_KEY}")
+
+    @Value("${BINANCE_API}")
     private String binanceApiKey;
-    @Value("${BIN_API_SECRET}")
-    private String binanceApiKeySecret;*/
+    @Value("${BINANCE_SECRET}")
+    private String binanceApiKeySecret;
     @Value("${BITTREX_API_KEY}")
     private String bittrexApiKey;
     @Value("${BITTEX_API_SECRET}")
@@ -30,14 +30,14 @@ public class CryptoConfig {
     @Value("${NEO_ADDRESS}")
     private String neoAddress;
 
- /*   @Bean
+    @Bean
     CryptoApiCaller binance() throws MalformedURLException {
         return new CryptoApiBuilder()
                 .withApiKey(binanceApiKey, binanceApiKeySecret)
-                .withBaseApiURL(new URL("https://api.binance.com/api/v1/"))
+                .withBaseApiURL(new URL("https://api.binance.com/api/v3/"))
                 .withApiService("binance")
                 .build();
-    }*/
+    }
 
     @Bean
     CryptoApiCaller bittrex() throws MalformedURLException {
