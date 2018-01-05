@@ -7,8 +7,28 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <meta http-equiv="refresh" content="60"/>
     <script type="text/javascript" th:inline="javascript">
-        google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {'packages': ['corechart']});
         google.charts.setOnLoadCallback(drawChart);
+
+        function fillOthers() {
+            /*<![CDATA[*/
+
+            var others = /*[[${wallets}]]*/;
+            for (i = 0; i < others.length; i++) {
+
+                if (others[i].value <= 2.5 && others[i].currency !== "Others") {
+                    $('#events').append('<tr class="extra"><th scope="row" class="bg-success">' + others[i].currency + '</th><td class="bg-success">' + others[i].balance + '</td><td class="bg-success">' + others[i].totalValueBtc + '</td><td class="bg-success">' + others[i].btcValue + '</td><td class="bg-success">' + others[i].value + '</td><td class="bg-success">' + others[i].priceChange1h + '</td><td class="bg-success">' + others[i].provider + '</td></tr>');
+                }
+            }
+            $(".extra").hide();
+            /*]]>*/
+        }
+        $(document).ready(function () {
+            $("#extrabutton").click(function () {
+                $("#extrabutton").text(($("#extrabutton").text() == 'Show small wallets') ? 'Hide small wallets' : 'Show small wallets');
+                $(".extra").toggle();
+            });
+        });
 
         function drawChart() {
             /*<![CDATA[*/
@@ -16,8 +36,8 @@
             console.log(jswallets.length);
 
             var tlArray = [['Wallet', 'EUR']];
-            for(i=0;i<jswallets.length;i++){
-                tlArray.push([jswallets[i].currency,jswallets[i].value])
+            for (i = 0; i < jswallets.length; i++) {
+                tlArray.push([jswallets[i].currency, jswallets[i].value])
             }
             /*]]>*/
             console.log(tlArray);
@@ -29,12 +49,12 @@
             };
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-            chart.draw(data,options);
+            chart.draw(data, options);
         }
     </script>
     <title th:text="&euro; + ''+ ${total}"></title>
 </head>
-<body>
+<body onload="fillOthers();">
 <div class="container py-2">
     <div class="card">
         <div class="card-header card-primary text-uppercase text-center">
@@ -110,53 +130,77 @@
                     <th>Provider</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="events">
                 <tr th:each="wallet : ${wallets}">
                     <th scope="row" th:text="${wallet.currency}" class="bg-success"
-                        th:if="${wallet.priceChange1h &gt; 0}"></th>
-                    <th scope="row" th:text="${wallet.currency}" th:if="${wallet.priceChange1h == 0.0}"></th>
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></th>
+                    <th scope="row" th:text="${wallet.currency}"
+                        th:if="${wallet.priceChange1h == 0.0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></th>
                     <th scope="row" th:text="${wallet.currency}" class="bg-danger"
-                        th:if="${wallet.priceChange1h &lt; 0}"></th>
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></th>
 
-                    <td th:text="${wallet.balance}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
-                    <td th:text="${wallet.balance}" th:if="${wallet.priceChange1h == 0}"></td>
-                    <td th:text="${wallet.balance}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+                    <td th:text="${wallet.balance}" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.balance}"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.balance}" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
-                    <td th:text="${wallet.totalValueBtc}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
-                    <td th:text="${wallet.totalValueBtc}" th:if="${wallet.priceChange1h == 0}"></td>
-                    <td th:text="${wallet.totalValueBtc}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+                    <td th:text="${wallet.totalValueBtc}" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.totalValueBtc}"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.totalValueBtc}" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
-                    <td th:text="${wallet.btcValue}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
-                    <td th:text="${wallet.btcValue}" th:if="${wallet.priceChange1h == 0}"></td>
-                    <td th:text="${wallet.btcValue}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+                    <td th:text="${wallet.btcValue}" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.btcValue}"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.btcValue}" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
-                    <td th:text="${wallet.value}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
-                    <td th:text="${wallet.value}" th:if="${wallet.priceChange1h == 0}"></td>
-                    <td th:text="${wallet.value}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+                    <td th:text="${wallet.value}" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.value}"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.value}" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
                     <td th:text="${wallet.priceChange1h} +'%'" class="bg-success"
-                        th:if="${wallet.priceChange1h &gt; 0}"></td>
-                    <td th:text="${wallet.priceChange1h} +'%'" th:if="${wallet.priceChange1h == 0}"></td>
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.priceChange1h} +'%'"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.priceChange1h} +'%'" class="bg-danger"
-                        th:if="${wallet.priceChange1h &lt; 0}"></td>
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
-                    <td th:text="${wallet.provider}" class="bg-success" th:if="${wallet.priceChange1h &gt; 0}"></td>
-                    <td th:text="${wallet.provider}" th:if="${wallet.priceChange1h == 0}"></td>
-                    <td th:text="${wallet.provider}" class="bg-danger" th:if="${wallet.priceChange1h &lt; 0}"></td>
+                    <td th:text="${wallet.provider}" class="bg-success"
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.provider}"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+                    <td th:text="${wallet.provider}" class="bg-danger"
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                 </tr>
                 </tbody>
             </table>
-            <div class="container justify-content-md-center py-5">
-                <h3 class="text-center">Verdeling</h3>
-                <div class="justify-content-md-center" id="piechart" style="width: 900px; height: 500px; display: block; margin: 0 auto;"></div>
+            <div class="row pl-2" th:each="wallet : ${wallets}" th:if="${wallet.currency == 'Others' and wallet.value > 0.0}">
+                <div class="col">
+                    <button class="btn btn-info pl-2" id="extrabutton" aria-expanded="false">Show small wallets</button>
+                </div>
+
             </div>
         </div>
-        <div class="card-footer">
-            <p class="text-muted text-center">Created by <a href="#">Jim van Biezen</a> ©</p>
+        <div class="container justify-content-md-center py-5">
+            <h3 class="text-center">Verdeling</h3>
+            <div class="justify-content-md-center" id="piechart"
+                 style="width: 900px; height: 500px; display: block; margin: 0 auto;"></div>
         </div>
     </div>
-
-
+    <div class="card-footer">
+        <p class="text-muted text-center">Created by <a href="#">Jim van Biezen</a> ©</p>
+    </div>
 </div>
+
+
 </body>
 </html>

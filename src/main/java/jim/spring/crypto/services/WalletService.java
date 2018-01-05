@@ -59,27 +59,27 @@ public class WalletService {
             }
             if (wallet.getCurrency().equals("EUR")) {
                 wallet.setEuroValue(wallet.getBalance());
-                wallet.setBtcValue(round(getBtcValue(currencies, wallet.getBalance()),6));
-                wallet.setTotalValueBtc(round(wallet.getBalance()*getBtcValue(currencies, wallet.getBalance()),6));
+                wallet.setBtcValue(round(getBtcValue(currencies, wallet.getBalance()), 6));
+                wallet.setTotalValueBtc(round(wallet.getBalance() * getBtcValue(currencies, wallet.getBalance()), 6));
                 wallet.setPriceChange1h(0D);
                 wallet.setPriceChange24h(0D);
                 wallet.setPriceChange7d(0D);
             }
             for (Currency curren : currencies) {
                 if (wallet.getCurrency().equals(curren.getSymbol())) {
-                    wallet.setBalance(round(wallet.getBalance(),6));
-                    wallet.setBtcValue(round(Double.valueOf(curren.getPriceBtc()),6));
-                    wallet.setTotalValueBtc(round(wallet.getBalance()*Double.valueOf(curren.getPriceBtc()),6));
+                    wallet.setBalance(round(wallet.getBalance(), 6));
+                    wallet.setBtcValue(round(Double.valueOf(curren.getPriceBtc()), 6));
+                    wallet.setTotalValueBtc(round(wallet.getBalance() * Double.valueOf(curren.getPriceBtc()), 6));
                     wallet.setEuroValue(round(wallet.getBalance() * Double.valueOf(curren.getPrice_eur()), 2));
                     wallet.setPriceChange1h(Double.valueOf(curren.getPercentChange1h()));
                     wallet.setPriceChange24h(Double.valueOf(curren.getPercentChange24h()));
                     wallet.setPriceChange7d(Double.valueOf(curren.getPercentChange7d()));
                     break;
                 }
-                if(wallet.getCurrency().equals("IOTA")&&curren.getSymbol().equals("MIOTA")){
-                    wallet.setBalance(round(wallet.getBalance(),6));
-                    wallet.setBtcValue(round(Double.valueOf(curren.getPriceBtc()),6));
-                    wallet.setTotalValueBtc(round(wallet.getBalance()*Double.valueOf(curren.getPriceBtc()),6));
+                if (wallet.getCurrency().equals("IOTA") && curren.getSymbol().equals("MIOTA")) {
+                    wallet.setBalance(round(wallet.getBalance(), 6));
+                    wallet.setBtcValue(round(Double.valueOf(curren.getPriceBtc()), 6));
+                    wallet.setTotalValueBtc(round(wallet.getBalance() * Double.valueOf(curren.getPriceBtc()), 6));
                     wallet.setEuroValue(round(wallet.getBalance() * Double.valueOf(curren.getPrice_eur()), 2));
                     wallet.setPriceChange1h(Double.valueOf(curren.getPercentChange1h()));
                     wallet.setPriceChange24h(Double.valueOf(curren.getPercentChange24h()));
@@ -87,7 +87,25 @@ public class WalletService {
                     break;
                 }
             }
+            if (wallet.getValue() == null) {
+                wallet.setEuroValue(0.0);
+                wallet.setBtcValue(0.0);
+            }
         }
+
+        Wallet smallCoinsWallet = new Wallet();
+        smallCoinsWallet.setCurrency("Others");
+        smallCoinsWallet.setEuroValue(0.0D);
+        smallCoinsWallet.setBtcValue(0.0D);
+        wallets.forEach(wallet -> {
+            if (wallet.getValue() <= 2.50) {
+                smallCoinsWallet.setEuroValue(smallCoinsWallet.getValue() + wallet.getValue());
+                smallCoinsWallet.setBtcValue(smallCoinsWallet.getBtcValue() + wallet.getBtcValue());
+                smallCoinsWallet.setProvider("Multiple");
+            }
+        });
+        wallets.add(smallCoinsWallet);
+
         return wallets;
     }
 
