@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
@@ -19,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
  * Created by jim on 24-11-17.
  */
 @SpringBootTest
-@TestPropertySource(value = "classpath:test-properties.properties")
 public class NeoWalletTest {
 
     NeoService neoService ;
