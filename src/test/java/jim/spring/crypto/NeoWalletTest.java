@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
  */
 @SpringBootTest
 public class NeoWalletTest {
-
     NeoService neoService ;
     @Value("NEO_ADDRESS")
     String neoAddress;
