@@ -12,4 +12,6 @@ import java.util.List;
 public interface CryptoApiCaller {
 
     List<Wallet> getWallets() throws IOException;
+
+    void calculateWalletValue(Wallet wallet);
 }

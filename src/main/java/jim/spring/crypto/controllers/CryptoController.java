@@ -1,10 +1,10 @@
 package jim.spring.crypto.controllers;
 
 import com.coinbase.api.exception.CoinbaseException;
-import jim.spring.crypto.apis.bittrex.api.BittrexService;
-import jim.spring.crypto.apis.coinbase.api.CoinbaseService;
-import jim.spring.crypto.apis.coinmarketcap.CoinmarketCapService;
-import jim.spring.crypto.apis.neo.NeoService;
+import jim.spring.crypto.apis.wallets.bittrex.api.BittrexService;
+import jim.spring.crypto.apis.wallets.coinbase.api.CoinbaseService;
+import jim.spring.crypto.apis.value.coinmarketcap.CoinmarketCapService;
+import jim.spring.crypto.apis.wallets.neo.NeoService;
 import jim.spring.crypto.entity.Wallet;
 import jim.spring.crypto.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;

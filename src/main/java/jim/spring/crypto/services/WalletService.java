@@ -1,11 +1,11 @@
 package jim.spring.crypto.services;
 
-import jim.spring.crypto.apis.binance.api.BinanceService;
-import jim.spring.crypto.apis.bittrex.api.BittrexService;
-import jim.spring.crypto.apis.coinbase.api.CoinbaseService;
-import jim.spring.crypto.apis.coinmarketcap.CoinmarketCapService;
-import jim.spring.crypto.apis.coinmarketcap.Currency;
-import jim.spring.crypto.apis.neo.NeoService;
+import jim.spring.crypto.apis.wallets.binance.BinanceService;
+import jim.spring.crypto.apis.wallets.bittrex.api.BittrexService;
+import jim.spring.crypto.apis.wallets.coinbase.api.CoinbaseService;
+import jim.spring.crypto.apis.value.coinmarketcap.CoinmarketCapService;
+import jim.spring.crypto.apis.value.coinmarketcap.Currency;
+import jim.spring.crypto.apis.wallets.neo.NeoService;
 import jim.spring.crypto.entity.Wallet;
 import jim.spring.crypto.repository.WalletRepository;
 import org.springframework.stereotype.Service;

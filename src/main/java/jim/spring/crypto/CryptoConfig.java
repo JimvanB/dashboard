@@ -2,8 +2,11 @@ package jim.spring.crypto;
 
 import jim.spring.crypto.builder.CryptoApiBuilder;
 import jim.spring.crypto.interfaces.CryptoApiCaller;
+import jim.spring.crypto.services.ValueCalculator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.net.MalformedURLException;
@@ -13,6 +16,7 @@ import java.net.URL;
  * Created by jim on 31-12-17.
  */
 @Configuration
+@ComponentScan("jim.spring.crypto.services")
 public class CryptoConfig {
 
     @Value("${BINANCE_API}")
@@ -29,6 +33,8 @@ public class CryptoConfig {
     private String coinbaseApiKeySecret;
     @Value("${NEO_ADDRESS}")
     private String neoAddress;
+    @Autowired
+    private ValueCalculator valueCalculator;
 
     @Bean
     CryptoApiCaller binance() throws MalformedURLException {
@@ -36,6 +42,7 @@ public class CryptoConfig {
                 .withApiKey(binanceApiKey, binanceApiKeySecret)
                 .withBaseApiURL(new URL("https://api.binance.com/api/v3/"))
                 .withApiService("binance")
+                .withValueCalculator(valueCalculator)
                 .build();
     }
 
@@ -45,6 +52,7 @@ public class CryptoConfig {
                 .withApiKey(bittrexApiKey, bittrexApiSecret)
                 .withBaseApiURL(new URL("https://bittrex.com/api/v1.1/"))
                 .withApiService("bittrex")
+                .withValueCalculator(valueCalculator)
                 .build();
     }
 
@@ -54,6 +62,7 @@ public class CryptoConfig {
                 .withApiKey(coinbaseApiKey, coinbaseApiKeySecret)
                 .withBaseApiURL(new URL("https://coinbase.com/api/v2/"))
                 .withApiService("coinbase")
+                .withValueCalculator(valueCalculator)
                 .build();
     }
 
@@ -69,6 +78,7 @@ public class CryptoConfig {
     public CryptoApiCaller neo() throws MalformedURLException {
         return new CryptoApiBuilder()
                 .withApiService("neo")
+                .withValueCalculator(valueCalculator)
                 .withBaseApiURL(new URL("https://otcgo.cn/api/v1/balances/"+neoAddress+"/")).build();
     }
 }

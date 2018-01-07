@@ -3,7 +3,7 @@ package jim.spring.crypto;
 
 import com.coinbase.api.exception.CoinbaseException;
 import jim.spring.crypto.entity.Wallet;
-import jim.spring.crypto.apis.bittrex.api.BittrexService;
+import jim.spring.crypto.apis.wallets.bittrex.api.BittrexService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

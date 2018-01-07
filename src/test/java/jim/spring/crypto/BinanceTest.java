@@ -1,7 +1,7 @@
 package jim.spring.crypto;
 
 import com.coinbase.api.exception.CoinbaseException;
-import jim.spring.crypto.apis.binance.api.BinanceService;
+import jim.spring.crypto.apis.wallets.binance.BinanceService;
 import jim.spring.crypto.builder.CryptoApiBuilder;
 import jim.spring.crypto.entity.Wallet;
 import org.junit.Before;

@@ -4,12 +4,14 @@ package jim.spring.crypto.builder;//
 //
 
 
-import jim.spring.crypto.apis.binance.api.BinanceImpl;
-import jim.spring.crypto.apis.bittrex.api.BittrexImpl;
-import jim.spring.crypto.apis.coinbase.api.CoinbaseImpl;
-import jim.spring.crypto.apis.coinmarketcap.CoinmarketCapImpl;
-import jim.spring.crypto.apis.neo.NeoImpl;
+import jim.spring.crypto.apis.wallets.binance.BinanceImpl;
+import jim.spring.crypto.apis.wallets.bittrex.api.BittrexImpl;
+import jim.spring.crypto.apis.wallets.coinbase.api.CoinbaseImpl;
+import jim.spring.crypto.apis.value.coinmarketcap.CoinmarketCapImpl;
+import jim.spring.crypto.apis.wallets.neo.NeoImpl;
 import jim.spring.crypto.interfaces.CryptoApiCaller;
+import jim.spring.crypto.services.ValueCalculator;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
@@ -19,6 +21,7 @@ public class CryptoApiBuilder {
     private String api_secret;
     private URL base_api_url;
     private String apiService;
+    private ValueCalculator valueCalculator;
 
     public CryptoApiBuilder() {
     }
@@ -41,6 +44,11 @@ public class CryptoApiBuilder {
         return new CoinbaseImpl(this);
     }
 
+    public CryptoApiBuilder withValueCalculator(ValueCalculator valueCalculator){
+        this.valueCalculator = valueCalculator;
+        return this;
+    }
+
     public CryptoApiBuilder withApiService(String apiService) {
         this.apiService = apiService;
         return this;
@@ -55,6 +63,14 @@ public class CryptoApiBuilder {
     public CryptoApiBuilder withBaseApiURL(URL base_api_url) {
         this.base_api_url = base_api_url;
         return this;
+    }
+
+    public ValueCalculator getValueCalculator() {
+        return valueCalculator;
+    }
+
+    public String getApiService() {
+        return apiService;
     }
 
     public String getApi_key() {

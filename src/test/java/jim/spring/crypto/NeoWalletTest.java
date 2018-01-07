@@ -1,14 +1,12 @@
 package jim.spring.crypto;
 
-import jim.spring.crypto.apis.neo.NeoService;
+import jim.spring.crypto.apis.wallets.neo.NeoService;
 import jim.spring.crypto.builder.CryptoApiBuilder;
 import jim.spring.crypto.entity.Wallet;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.net.URL;

@@ -2,7 +2,7 @@
 package jim.spring.crypto;
 
 import com.coinbase.api.exception.CoinbaseException;
-import jim.spring.crypto.apis.coinbase.api.CoinbaseService;
+import jim.spring.crypto.apis.wallets.coinbase.api.CoinbaseService;
 import jim.spring.crypto.entity.Wallet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
