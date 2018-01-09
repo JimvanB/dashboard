@@ -17,7 +17,13 @@
             for (i = 0; i < others.length; i++) {
 
                 if (others[i].value <= 2.5 && others[i].currency !== "Others") {
-                    $('#events').append('<tr class="extra"><th scope="row" class="bg-success">' + others[i].currency + '</th><td class="bg-success">' + others[i].balance + '</td><td class="bg-success">' + others[i].totalValueBtc + '</td><td class="bg-success">' + others[i].btcValue + '</td><td class="bg-success">' + others[i].value + '</td><td class="bg-success">' + others[i].priceChange1h + '</td><td class="bg-success">' + others[i].provider + '</td></tr>');
+                    if(others[i].priceChange1h > 0.0) {
+                        $('#events').append('<tr class="extra"><th scope="row" class="bg-success">' + others[i].currency + '</th><td class="bg-success">' + others[i].balance + '</td><td class="bg-success">' + others[i].totalValueBtc + '</td><td class="bg-success">' + others[i].btcValue + '</td><td class="bg-success">' + others[i].value + '</td><td class="bg-success">' + others[i].priceChange1h + '</td><td class="bg-success">' + others[i].provider + '</td></tr>');
+                    } else if(others[i].priceChange1h < 0.0) {
+                        $('#events').append('<tr class="extra"><th scope="row" class="bg-danger">' + others[i].currency + '</th><td class="bg-danger">' + others[i].balance + '</td><td class="bg-danger">' + others[i].totalValueBtc + '</td><td class="bg-danger">' + others[i].btcValue + '</td><td class="bg-danger">' + others[i].value + '</td><td class="bg-danger">' + others[i].priceChange1h + '</td><td class="bg-danger">' + others[i].provider + '</td></tr>');
+                    } else {
+                        $('#events').append('<tr class="extra"><th scope="row" >' + others[i].currency + '</th><td >' + others[i].balance + '</td><td >' + others[i].totalValueBtc + '</td><td >' + others[i].btcValue + '</td><td >' + others[i].value + '</td><td >' + others[i].priceChange1h + '</td><td >' + others[i].provider + '</td></tr>');
+                    }
                 }
             }
             $(".extra").hide();
@@ -128,6 +134,7 @@
                     <th>Value EURO</th>
                     <th>1h Change</th>
                     <th>Provider</th>
+                    <th class="text-center">Alerts</th>
                 </tr>
                 </thead>
                 <tbody id="events">
@@ -136,50 +143,60 @@
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></th>
                     <th scope="row" th:text="${wallet.currency}"
                         th:if="${wallet.priceChange1h == 0.0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></th>
-                    <th scope="row" th:text="${wallet.currency}" class="bg-danger"
+                    <th scope="row" th:text="${wallet.currency}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></th>
 
                     <td th:text="${wallet.balance}" class="bg-success"
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.balance}"
                         th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
-                    <td th:text="${wallet.balance}" class="bg-danger"
+                    <td th:text="${wallet.balance}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
                     <td th:text="${wallet.totalValueBtc}" class="bg-success"
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.totalValueBtc}"
                         th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
-                    <td th:text="${wallet.totalValueBtc}" class="bg-danger"
+                    <td th:text="${wallet.totalValueBtc}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
                     <td th:text="${wallet.btcValue}" class="bg-success"
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.btcValue}"
                         th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
-                    <td th:text="${wallet.btcValue}" class="bg-danger"
+                    <td th:text="${wallet.btcValue}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
                     <td th:text="${wallet.value}" class="bg-success"
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.value}"
                         th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
-                    <td th:text="${wallet.value}" class="bg-danger"
+                    <td th:text="${wallet.value}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
                     <td th:text="${wallet.priceChange1h} +'%'" class="bg-success"
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.priceChange1h} +'%'"
                         th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
-                    <td th:text="${wallet.priceChange1h} +'%'" class="bg-danger"
+                    <td th:text="${wallet.priceChange1h} +'%'" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
                     <td th:text="${wallet.provider}" class="bg-success"
                         th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
                     <td th:text="${wallet.provider}"
                         th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
-                    <td th:text="${wallet.provider}" class="bg-danger"
+                    <td th:text="${wallet.provider}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
+
+                    <td class="bg-success text-center" th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
+                        <button class="btn btn-sm  btn-primary " data-toggle="modal" data-target="#exampleModal">Set alert</button>
+                    </td>
+                    <td class="text-center" th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
+                        <button class="btn btn-sm  btn-primary " data-toggle="modal" data-target="#exampleModal">Set alert</button>
+                    </td>
+                    <td class="bg-danger text-center" th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
+                        <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal">Set alert</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -200,5 +217,45 @@
         <p class="text-muted text-center">Created by <a href="#">Jim van Biezen</a> ©</p>
     </div>
 </div>
+
+
+<!-- ALERT MODAL -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add meeting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" th:action="@{/new/}">
+                    <div class="row">
+                        <label for="gewicht-input" class="px-3 col col-form-label">Currency Pair:</label>
+                        <div class="col">
+                            <input type="text" class="form-control" id="gewicht-input"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col col-form-label">Value</label>
+                        <div class="col">
+                            <input type="text" class="form-control" id="deelnemer-name" readonly="readonly"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col text-center">
+                            <button type="submit" class="btn btn-primary">Set Alert</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </body>
 </html>
