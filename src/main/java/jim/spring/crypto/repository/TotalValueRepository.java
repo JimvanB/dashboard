@@ -17,9 +17,14 @@ public interface TotalValueRepository extends CrudRepository<TotalValue,Long> {
 
     TotalValue findFirstByTimeBetween(LocalDateTime dayBegin, LocalDateTime dayEnd);
 
-    @Query("SELECT max(tv.total) FROM TotalValue tv")
+    @Query("SELECT max(tv.total), tv.time FROM TotalValue tv GROUP BY tv.time")
     TotalValue findMaxValue();
 
+    TotalValue findFirstByOrderByTotalDesc();
+
     TotalValue findFirstByOrderByIdDesc();
+
+    @Query("SELECT AVG(tv.total), day(tv.time), month(tv.time), year(tv.time) FROM TotalValue tv GROUP BY year(tv.time), month(tv.time), day(tv.time)")
+    List<TotalValue> findAverageTotalValuePerDay();
 
 }

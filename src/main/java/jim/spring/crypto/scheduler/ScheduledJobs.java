@@ -38,5 +38,9 @@ public class ScheduledJobs {
         totalValueRepository.save(new TotalValue(total, LocalDateTime.now()));
         walletService.saveWallets(wallets);
         logger.info(total.toString());
+
+        //testje avg total
+        List<TotalValue> values = totalValueRepository.findAverageTotalValuePerDay();
+
     }
 }

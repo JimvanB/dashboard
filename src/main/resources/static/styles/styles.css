@@ -1,6 +1,7 @@
 html,
 body{
     height: 100%;
+    width:100%;
 }
 
 #cover{
@@ -14,6 +15,26 @@ body{
 
 }
 
+.chart {
+    width: 100%;
+    min-height: 500px;
+}
+
 #cover_caption{
     width: 100%;
 }
+
+#fixedbg {
+    background: #222 url('../img/money.jpg') center center no-repeat fixed;
+    background-size: cover;
+    width: 100%;
+}
+
+.card-header-transparent {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.h3-transparent{
+    background: rgba(0, 0, 0, 0.9);
+}
+

@@ -6,9 +6,10 @@
     <script type="text/javascript" src="js/gstatic.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <meta http-equiv="refresh" content="60"/>
+    <script src="js/charts.js"></script>
     <script type="text/javascript" th:inline="javascript">
         google.charts.load('current', {'packages': ['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart, drawLineChart);
 
         function fillOthers() {
             /*<![CDATA[*/
@@ -17,9 +18,9 @@
             for (i = 0; i < others.length; i++) {
 
                 if (others[i].value <= 2.5 && others[i].currency !== "Others") {
-                    if(others[i].priceChange1h > 0.0) {
+                    if (others[i].priceChange1h > 0.0) {
                         $('#events').append('<tr class="extra"><th scope="row" class="bg-success">' + others[i].currency + '</th><td class="bg-success">' + others[i].balance + '</td><td class="bg-success">' + others[i].totalValueBtc + '</td><td class="bg-success">' + others[i].btcValue + '</td><td class="bg-success">' + others[i].value + '</td><td class="bg-success">' + others[i].priceChange1h + '</td><td class="bg-success">' + others[i].provider + '</td></tr>');
-                    } else if(others[i].priceChange1h < 0.0) {
+                    } else if (others[i].priceChange1h < 0.0) {
                         $('#events').append('<tr class="extra"><th scope="row" class="bg-danger">' + others[i].currency + '</th><td class="bg-danger">' + others[i].balance + '</td><td class="bg-danger">' + others[i].totalValueBtc + '</td><td class="bg-danger">' + others[i].btcValue + '</td><td class="bg-danger">' + others[i].value + '</td><td class="bg-danger">' + others[i].priceChange1h + '</td><td class="bg-danger">' + others[i].provider + '</td></tr>');
                     } else {
                         $('#events').append('<tr class="extra"><th scope="row" >' + others[i].currency + '</th><td >' + others[i].balance + '</td><td >' + others[i].totalValueBtc + '</td><td >' + others[i].btcValue + '</td><td >' + others[i].value + '</td><td >' + others[i].priceChange1h + '</td><td >' + others[i].provider + '</td></tr>');
@@ -29,13 +30,18 @@
             $(".extra").hide();
             /*]]>*/
         }
+        $(window).resize(function () {
+            drawChart();
+        });
         $(document).ready(function () {
             $("#extrabutton").click(function () {
                 $("#extrabutton").text(($("#extrabutton").text() == 'Show small wallets') ? 'Hide small wallets' : 'Show small wallets');
                 $(".extra").toggle();
             });
+            $(".carousel").carousel({
+                interval: false
+            });
         });
-
         function drawChart() {
             /*<![CDATA[*/
             var jswallets = /*[[${wallets}]]*/;
@@ -50,76 +56,107 @@
 
             var data = google.visualization.arrayToDataTable(tlArray);
             var options = {
-                chartArea: {top: 5},
-                legend: {position: 'bottom'}
+                chartArea: {
+                    width: '100 %'
+                },
+                legend: {position: 'bottom'},
+                width: 1000,
+                height: 500
             };
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
             chart.draw(data, options);
         }
+        function drawLineChart() {
+            // $.get("/chart", function (mydata) {
+            //   var data = google.visualization.arrayToDataTable(mydata);
+            // var selectedGroupByDropdownBox = document.getElementById("groupBySelector");
+            // var selectedGroupBy = selectedGroupByDropdownBox.options[selectedGroupByDropdownBox.selectedIndex].value;
+
+            var data = google.visualization.arrayToDataTable([
+                ['Year', 'Sales', 'Expenses'],
+                ['2004', 1000, 400],
+                ['2005', 1170, 460],
+                ['2006', 660, 1120],
+                ['2007', 1030, 540]
+            ]);
+            var options = {
+
+                interpolateNulls: true,
+                title: 'Voortgang',
+                chartArea: {top: 50,  width:'100%'},
+                width: '800',
+                height: 500,
+                legend: {position: 'bottom'}
+            };
+            console.log(" BLALA");
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+            //});
+
+        }
+
     </script>
+
     <title th:text="&euro; + ''+ ${total}"></title>
 </head>
-<body onload="fillOthers();">
-<div class="container py-2">
+<body onload="fillOthers();drawLineChart();" id="fixedbg">
+<br/>
+<div class="container">
     <div class="card">
-        <div class="card-header card-primary text-uppercase text-center">
-            <h3 style="color: white">Jims Crypto Moneyyz</h3>
+        <div class="card-header card-primary text-uppercase text-center" style="background-color: #a17f1a;border: none">
+            <h3 style="background-color: #a17f1a;color: white">Jims Crypto Moneyyz</h3>
         </div>
         <div class="card-block">
-            <div class="row">
-                <div class="col-6 text-right">
-                    <h4>Total:</h4>
-                </div>
-                <div class="col-6">
-                    <h4 th:text="&euro; + ''+ ${total}"></h4>
-                </div>
+            <div class="row justify-content-center">
+                <h4 th:text="'Total: &euro;'+${total}"></h4>
+            </div>
+            <div class="row justify-content-center">
+                <i class="fa fa-lg fa-arrow-up align-middle py-1" style="color: green;"
+                   th:if="${verschil1h &gt; 0.0}"></i>
+                <i class="fa fa-lg fa-arrow-down align-middle py-1" style="color: red;"
+                   th:if="${verschil1h &lt; 0.0}"></i>
+                <h5 th:text="' Change: '+${verschil1h} +'%'"></h5>
             </div>
 
-            <div class="row">
-                <div class="col-6 text-right">
-                    <h4>Change:</h4>
-                </div>
-                <div class="col col-md-auto">
-                    <i class="fa fa-lg fa-arrow-up align-middle py-1" aria-hidden="true" style="color: green;"
-                       th:if="${verschil1h &gt; 0}"></i>
-                    <i class="fa fa-lg fa-arrow-down align-middle py-1" aria-hidden="true" style="color: red;"
-                       th:if="${verschil1h &lt; 0}"></i>
-                </div>
-                <div class="col ml-0 pl-0">
-                    <h5 th:text="''+${verschil1h} +'%'"></h5>
-                </div>
+            <div class="row justify-content-center">
+                <h6>
+                    <small th:text="'last checked: '+${#temporals.format(lastChecked, 'dd-MM-yyyy HH:mm')}"></small>
+                </h6>
+            </div>
+            <!--
+                        <div class="row justify-content-md-center">
+                            <label class="custom-control custom-radio">
+                                <input id="radio1" name="radio" type="radio" class="custom-control-input" value="1h"/>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">1h</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input id="radio2" name="radio" type="radio" class="custom-control-input" value="24h"/>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">24h</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input id="radio3" name="radio" type="radio" class="custom-control-input" value="1d"/>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">7d</span>
+                            </label>
+                        </div>-->
+
+            <div class="row justify-content-center">
+                <h6 th:text="'Max: &euro;'+ ${max}"></h6>
             </div>
 
-            <div class="row justify-content-md-center">
-                <label class="custom-control custom-radio">
-                    <input id="radio1" name="radio" type="radio" class="custom-control-input" value="1h"/>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">1h</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input id="radio2" name="radio" type="radio" class="custom-control-input" value="24h"/>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">24h</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input id="radio3" name="radio" type="radio" class="custom-control-input" value="1d"/>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">7d</span>
-                </label>
-            </div>
-
-            <div class="row">
-                <div class="col-6 text-right">
-                    <h6>Max:</h6>
-                </div>
-                <div class="col-6">
-                    <h6 th:text="&euro; + ''+ ${max}"></h6>
-                </div>
+            <div class="row justify-content-center">
+                <h6>
+                    <small th:text="${#temporals.format(maxDate, 'dd-MM-yyyy HH:mm')}"></small>
+                </h6>
             </div>
         </div>
     </div>
 </div>
+<br/>
 <div class="container">
     <div class="card">
         <div class="card-header text-center text-uppercase font-weight-bold"><h3>Wallets</h3></div>
@@ -188,39 +225,94 @@
                     <td th:text="${wallet.provider}" class="bg-danger align-middle"
                         th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}"></td>
 
-                    <td class="bg-success text-center" th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
-                        <button class="btn btn-sm  btn-primary " data-toggle="modal" data-target="#exampleModal">Set alert</button>
+                    <td class="bg-success text-center"
+                        th:if="${wallet.priceChange1h &gt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
+                        <button class="btn btn-sm  btn-primary " data-toggle="modal" data-target="#exampleModal">Set
+                            alert
+                        </button>
                     </td>
-                    <td class="text-center" th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
-                        <button class="btn btn-sm  btn-primary " data-toggle="modal" data-target="#exampleModal">Set alert</button>
+                    <td class="text-center"
+                        th:if="${wallet.priceChange1h == 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
+                        <button class="btn btn-sm  btn-primary " data-toggle="modal" data-target="#exampleModal">Set
+                            alert
+                        </button>
                     </td>
-                    <td class="bg-danger text-center" th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
-                        <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal">Set alert</button>
+                    <td class="bg-danger text-center"
+                        th:if="${wallet.priceChange1h &lt; 0 and (wallet.value &gt; 2.5 or wallet.currency == 'Others')}">
+                        <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#exampleModal">Set
+                            alert
+                        </button>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <div class="row pl-2" th:each="wallet : ${wallets}" th:if="${wallet.currency == 'Others' and wallet.value > 0.0}">
+            <div class="row pl-2" th:each="wallet : ${wallets}"
+                 th:if="${wallet.currency == 'Others' and wallet.value > 0.0}">
                 <div class="col">
                     <button class="btn btn-info pl-2" id="extrabutton" aria-expanded="false">Show small wallets</button>
                 </div>
 
             </div>
         </div>
-        <div class="container justify-content-md-center py-5">
-            <h3 class="text-center">Verdeling</h3>
-            <div class="justify-content-md-center" id="piechart"
-                 style="width: 900px; height: 500px; display: block; margin: 0 auto;"></div>
+    </div>
+    <br/>
+    <div class="card">
+        <div class="card-header text-center text-uppercase font-weight-bold"><h3>Info</h3></div>
+        <div class="card-block py-0 px-0">
+            <div id="carousel-info" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    <div class="carousel-item active" style="background-color: #2a62bc;height:600px; width: 100%">
+                        <div class="row justify-content-center" style="width: 100%">
+
+                            <div class="col-sm-12 justify-content-center">
+                                <center>
+                                    Deelnemer:
+                                    <select id="chartSelector" onchange="drawLineChart();" class="custom-select">
+                                        <option value="all" selected="selected">All</option>
+                                        <!-- <option th:each="deelnemer : ${deelnemers}" th:if="${#lists.size(deelnemer.metingen) != 0}"
+                                                 th:value="${deelnemer.name}"
+                                                 th:text="${deelnemer.name}"></option>-->
+                                    </select>
+                                    Periode:
+                                    <select id="groupBySelector" onchange="drawLineChart();" class="custom-select">>
+                                        <option value="day" selected="selected">Day</option>
+                                        <option value="week">Week</option>
+                                        <option value="month">Month</option>
+                                        <option value="year">Year</option>
+                                    </select>
+                                </center>
+                            </div>
+                            <div class="row">
+                                <div id="curve_chart" class="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item " style="background-color: #2a62bc;" id="test-car">
+                        <div id="piechart" class="chart"></div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carousel-info" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel-info" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="card-footer">
+            <p class="text-muted text-center">Created by <a href="#">Jim van Biezen</a> ©</p>
         </div>
     </div>
-    <div class="card-footer">
-        <p class="text-muted text-center">Created by <a href="#">Jim van Biezen</a> ©</p>
-    </div>
+
+
 </div>
 
 
 <!-- ALERT MODAL -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -255,7 +347,7 @@
         </div>
     </div>
 </div>
-
+<br/>
 
 </body>
 </html>

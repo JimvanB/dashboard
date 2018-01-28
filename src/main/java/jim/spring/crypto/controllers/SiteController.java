@@ -39,8 +39,9 @@ public class SiteController {
 
     @GetMapping("/")
     public String index(Model model) throws IOException {
-        Double total = totalValueRepository.findFirstByOrderByIdDesc().getTotal();
-
+        TotalValue total = totalValueRepository.findFirstByOrderByIdDesc();
+        Double totalValue = total.getTotal();
+        LocalDateTime lastChecked =total.getTime();
         TotalValue val1h = totalValueRepository.findFirstByTimeBetween(start(1), end(1));
         TotalValue val24h = totalValueRepository.findFirstByTimeBetween(start(24), end(24));
         TotalValue val7d = totalValueRepository.findFirstByTimeBetween(start(24 * 7), end(24 * 7));
@@ -58,12 +59,17 @@ public class SiteController {
             return 0;
         });
 
+        TotalValue max = totalValueRepository.findFirstByOrderByTotalDesc();
+
+
         model.addAttribute("wallets", wallets);
-        model.addAttribute("total", round(total, 2));
-        model.addAttribute("verschil1h", round(getVerschil(total, val1h), 2));
-        model.addAttribute("verschil24h", round(getVerschil(total, val24h), 2));
-        model.addAttribute("verschil7d", round(getVerschil(total, val7d), 2));
-        model.addAttribute("max", round(totalValueRepository.findMaxValue().getTotal(), 2));
+        model.addAttribute("total", round(totalValue, 2));
+        model.addAttribute("lastChecked", lastChecked);
+        model.addAttribute("verschil1h", round(getVerschil(totalValue, val1h), 2));
+        model.addAttribute("verschil24h", round(getVerschil(totalValue, val24h), 2));
+        model.addAttribute("verschil7d", round(getVerschil(totalValue, val7d), 2));
+        model.addAttribute("max", round(max.getTotal(), 2));
+        model.addAttribute("maxDate", max.getTime());
 
 
         return "index";
