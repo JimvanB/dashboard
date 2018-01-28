@@ -1,11 +1,10 @@
 package jim.spring.crypto.scheduler;
 
-import jim.spring.crypto.controllers.CryptoController;
+import jim.spring.crypto.domain.TotalValueStats;
 import jim.spring.crypto.entity.TotalValue;
 import jim.spring.crypto.entity.Wallet;
 import jim.spring.crypto.repository.TotalValueRepository;
 import jim.spring.crypto.services.WalletService;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -40,7 +39,7 @@ public class ScheduledJobs {
         logger.info(total.toString());
 
         //testje avg total
-        List<TotalValue> values = totalValueRepository.findAverageTotalValuePerDay();
+        List<TotalValueStats> values = totalValueRepository.findTotalValueStatsPerDay();
 
     }
 }

@@ -5,7 +5,7 @@
     <script src="js/radiobutton.js"></script>
     <script type="text/javascript" src="js/gstatic.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <meta http-equiv="refresh" content="60"/>
+    <meta http-equiv="refresh" content="300"/>
     <script src="js/charts.js"></script>
     <script type="text/javascript" th:inline="javascript">
         google.charts.load('current', {'packages': ['corechart']});
@@ -68,32 +68,33 @@
             chart.draw(data, options);
         }
         function drawLineChart() {
-            // $.get("/chart", function (mydata) {
-            //   var data = google.visualization.arrayToDataTable(mydata);
-            // var selectedGroupByDropdownBox = document.getElementById("groupBySelector");
-            // var selectedGroupBy = selectedGroupByDropdownBox.options[selectedGroupByDropdownBox.selectedIndex].value;
+             var selectedGroupByDropdownBox = document.getElementById("groupBySelector");
+             var selectedGroupBy = selectedGroupByDropdownBox.options[selectedGroupByDropdownBox.selectedIndex].value;
+             console.log(selectedGroupBy);
+            $.get("/totalvalue/"+selectedGroupBy, function (mydata) {
+                console.log(mydata);
 
-            var data = google.visualization.arrayToDataTable([
-                ['Year', 'Sales', 'Expenses'],
-                ['2004', 1000, 400],
-                ['2005', 1170, 460],
-                ['2006', 660, 1120],
-                ['2007', 1030, 540]
-            ]);
-            var options = {
 
-                interpolateNulls: true,
-                title: 'Voortgang',
-                chartArea: {top: 50,  width:'100%'},
-                width: '800',
-                height: 500,
-                legend: {position: 'bottom'}
-            };
-            console.log(" BLALA");
-            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-            chart.draw(data, options);
-            //});
+                var data = google.visualization.arrayToDataTable(mydata);
+                var options = {
+                    series: {
+                        0: {color: 'red'},
+                        1: {color: 'green'},
+                        2: {color: 'blue'}
+                    },
+                    interpolateNulls: true,
+                    title: 'Portfolio waarde',
+                    chartArea:{left:0,top:10,width:"100%"},
+                    vAxis:{textPosition: 'in', title: 'Euro'},
+                    width: '600',
+                    height: 500,
+                };
+                console.log(" BLALA");
+                var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                chart.draw(data, options);
+            });
 
         }
 
@@ -261,18 +262,11 @@
         <div class="card-block py-0 px-0">
             <div id="carousel-info" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner" role="listbox">
-                    <div class="carousel-item active" style="background-color: #2a62bc;height:600px; width: 100%">
+                    <div class="carousel-item active" style="height:600px; width: 100%">
                         <div class="row justify-content-center" style="width: 100%">
 
                             <div class="col-sm-12 justify-content-center">
                                 <center>
-                                    Deelnemer:
-                                    <select id="chartSelector" onchange="drawLineChart();" class="custom-select">
-                                        <option value="all" selected="selected">All</option>
-                                        <!-- <option th:each="deelnemer : ${deelnemers}" th:if="${#lists.size(deelnemer.metingen) != 0}"
-                                                 th:value="${deelnemer.name}"
-                                                 th:text="${deelnemer.name}"></option>-->
-                                    </select>
                                     Periode:
                                     <select id="groupBySelector" onchange="drawLineChart();" class="custom-select">>
                                         <option value="day" selected="selected">Day</option>

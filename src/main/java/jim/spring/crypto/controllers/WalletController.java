@@ -18,7 +18,7 @@ import java.util.List;
  * Created by jim on 8-8-17.
  */
 @RestController
-public class CryptoController {
+public class WalletController {
 
     private CoinmarketCapService coinmarketCapService;
     private CoinbaseService coinbaseService;
@@ -27,7 +27,7 @@ public class CryptoController {
     private WalletService walletService;
 
     @Autowired
-    public CryptoController(CoinmarketCapService coinmarketCapService, CoinbaseService coinbaseService, BittrexService bittrexService, NeoService neoService, WalletService walletService) {
+    public WalletController(CoinmarketCapService coinmarketCapService, CoinbaseService coinbaseService, BittrexService bittrexService, NeoService neoService, WalletService walletService) {
         this.coinmarketCapService = coinmarketCapService;
         this.coinbaseService = coinbaseService;
         this.bittrexService = bittrexService;
