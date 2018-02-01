@@ -4,6 +4,7 @@ import jim.spring.crypto.domain.TotalValueStats;
 import jim.spring.crypto.entity.TotalValue;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -24,16 +25,23 @@ public interface TotalValueRepository extends CrudRepository<TotalValue,Long> {
 
     TotalValue findFirstByOrderByIdDesc();
 
-    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,day(tv.time) as day, month(tv.time) as month, year(tv.time) as year) FROM TotalValue tv GROUP BY year(tv.time), month(tv.time), day(tv.time)")
+    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,CONCAT(day(tv.time),'-',month(tv.time),'-',year(tv.time)) as timeString) FROM TotalValue tv GROUP BY year(tv.time), month(tv.time), day(tv.time)")
     List<TotalValueStats> findTotalValueStatsPerDay();
 
-    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin, week(tv.time) as week, year(tv.time) as year) FROM TotalValue tv GROUP BY year(tv.time), week(tv.time)")
+    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,CONCAT(week(tv.time),'-',year(tv.time)) as timeString) FROM TotalValue tv GROUP BY year(tv.time), week(tv.time)")
     List<TotalValueStats> findTotalValueStatsPerWeek();
 
-    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,month(tv.time) as month, year(tv.time) as year) FROM TotalValue tv GROUP BY year(tv.time), month(tv.time)")
+    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,CONCAT(month(tv.time),'-',year(tv.time)) as timeString) FROM TotalValue tv GROUP BY year(tv.time), month(tv.time)")
     List<TotalValueStats> findTotalValueStatsPerMonth();
 
-    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,year(tv.time) as year) FROM TotalValue tv GROUP BY year(tv.time)")
+    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,CONCAT('',year(tv.time)) as timeString) FROM TotalValue tv GROUP BY year(tv.time)")
     List<TotalValueStats> findTotalValueStatsPerYear();
+
+    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, MAX(tv.total) as totalValueMax, MIN(tv.total) as totalValueMin,CONCAT('',hour(tv.time),':00') as timeString) FROM TotalValue tv WHERE tv.time BETWEEN :dayBegin AND :dayEnd GROUP BY day(tv.time),hour(tv.time)")
+    List<TotalValueStats> findTotalValueStatsPerHour(@Param("dayBegin") LocalDateTime dayBegin,@Param("dayEnd") LocalDateTime dayEnd);
+
+    @Query("SELECT new jim.spring.crypto.domain.TotalValueStats( AVG(tv.total) as totalValueAvg, CONCAT(hour(tv.time),':',minute(tv.time)) as timeString) FROM TotalValue tv WHERE tv.time BETWEEN :dayBegin AND :dayEnd GROUP BY day(tv.time),hour(tv.time), minute(tv.time)")
+    List<TotalValueStats> findTotalValueStatsPerMinute(@Param("dayBegin") LocalDateTime dayBegin,@Param("dayEnd") LocalDateTime dayEnd);
+
 
 }

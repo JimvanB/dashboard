@@ -14,9 +14,30 @@ public class TotalValueStats {
     Integer day;
     Integer month;
     Integer year;
+    Integer hour;
+    Integer minute;
+    String timeString;
     LocalDateTime time;
 
     public TotalValueStats() {
+    }
+
+    public TotalValueStats(Double totalValueAvg, String timeString) {
+        this.totalValueAvg = totalValueAvg;
+        this.timeString = timeString;
+    }
+
+    public TotalValueStats(Double totalValueAvg, Double totalValueMax, Double totalValueMin, String timeString) {
+        this.totalValueAvg = totalValueAvg;
+        this.totalValueMax = totalValueMax;
+        this.totalValueMin = totalValueMin;
+        this.timeString = timeString;
+    }
+
+    public TotalValueStats(Double totalValueAvg, Integer minute, Integer hour) {
+        this.totalValueAvg = totalValueAvg;
+        this.hour = hour;
+        this.minute = minute;
     }
 
     public TotalValueStats(Double totalValueAvg, Double totalValueMax, Double totalValueMin, Integer year) {
@@ -99,6 +120,22 @@ public class TotalValueStats {
         this.week = week;
     }
 
+    public Integer getHour() {
+        return hour;
+    }
+
+    public void setHour(Integer hour) {
+        this.hour = hour;
+    }
+
+    public Integer getMinute() {
+        return minute;
+    }
+
+    public void setMinute(Integer minute) {
+        this.minute = minute;
+    }
+
     public LocalDateTime getTime() {
         LocalDateTime time = LocalDateTime.now();
         time.withMonth(month);
@@ -107,19 +144,12 @@ public class TotalValueStats {
         return time;
     }
 
-    public String getTimeString(String interval){
-            switch (interval){
-                case "day":
-                    return ""+getYear()+'-'+getMonth()+'-'+getDay();
-                case "week":
-                   return ""+getYear()+'-'+getWeek();
-                case "month":
-                    return ""+getYear()+'-'+getWeek();
-                case "year":
-                    return ""+getYear();
-                default:
-                    return ""+getYear()+'-'+getMonth()+'-'+getDay();
-            }
+    public String getTimeString() {
+        return timeString;
+    }
+
+    public void setTimeString(String timeString) {
+        this.timeString = timeString;
     }
 
 }
